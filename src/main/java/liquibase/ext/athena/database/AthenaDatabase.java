@@ -1,24 +1,13 @@
 package liquibase.ext.athena.database;
 
 import liquibase.database.AbstractJdbcDatabase;
+import liquibase.exception.DatabaseException;
+import liquibase.structure.DatabaseObject;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
-
 
 public class AthenaDatabase extends AbstractJdbcDatabase {
-    private static final String PRODUCT_NAME = "AWS.Athena";
-
-    /**
-     * JDBC Driver Info
-     */
-    private static final String JDBC_PREFIX = "jdbc:athena";
-    private static final String DEFAULT_JDBC_DRIVER = "com.amazon.athena.jdbc.AthenaDriver";
-    private static final int DEFAULT_PORT = 443;
-
-    private Set<String> athenaReservedWords = new HashSet<String>();
 
     public AthenaDatabase() {
         super.setCurrentDateTimeFunction("CURRENT_TIMESTAMP");
@@ -51,51 +40,14 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
 
         super.unquotedObjectsAreUppercased = false;
     }
+
     @Override
-    public String getShortName() {
-        return "athena";
+    public String correctObjectName(String name, Class<? extends DatabaseObject> objectType) {
+        return name.toLowerCase(Locale.US)
     }
 
     @Override
-    protected String getDefaultDatabaseProductName() {
-        return "AWS.Athena";
-    }
-
-    @Override
-    public Integer getDefaultPort() {
-        return DEFAULT_PORT;
-    }
-
-    @Override
-    public int getPriority() {
-        return PRIORITY_DEFAULT;
-    }
-
-    @Override
-    public boolean supportsInitiallyDeferrableColumns() {
-
-    }
-
-    @Override
-    public boolean isCorrectDatabaseImplementation(DatabaseConnection conn) throws DatabaseException {
-        return conn.getURL().startsWith(JDBC_PREFIX);
-    }
-
-    @Override
-    public String getDefaultDriver(String url) {
-        if (String.valueOf(url).startsWith(JDBC_PREFIX)) {
-            return DEFAULT_JDBC_DRIVER;
-        }
-        return null;
-    }
-
-    @Override
-    public boolean supportsCatalogInObjectName(Class<? extends DatabaseObject> type) {
-        return false;
-    }
-
-    @Override
-    public boolean supportsSequences() {
+    public boolean createsIndexesForForeignKeys() {
         return false;
     }
 
@@ -110,51 +62,23 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     }
 
     @Override
-    public void setConnection(DatabaseConnection conn) {
-        super.setConnection(conn);
+    protected String getDefaultDatabaseProductName() {
+        return "AWS.Athena";
     }
 
     @Override
-    public boolean isSystemObject(DatabaseObject example) {
-        return super.isSystemObject(example);
+    public String getDefaultDriver(String s) {
+        return "com.amazon.athena.jdbc.AthenaDriver";
     }
 
     @Override
-    public boolean supportsTablespaces() {
-        return false;
+    public Integer getDefaultPort() {
+        return 443;
     }
 
     @Override
-    public boolean supportsAutoIncrement() {
-        return false;
-    }
-
-    /**
-     * This has special case logic to handle NOT quoting column names if they are
-     * of type 'LiquibaseColumn' - columns in the DATABASECHANGELOG or DATABASECHANGELOGLOCK
-     * tables.
-     */
-    @Override
-    public String escapeObjectName(String objectName, Class<? extends DatabaseObject> objectType) {
-        if (objectName != null) {
-            objectName = objectName.trim().toLowerCase(Locale.US)
-            if (mustQuoteObjectName(objectName, objectType)) {
-                return quoteObject(objectName, objectType)
-            } else if (quotingStrategy == ObjectQuotingStrategy.QUOTE_ALL_OBJECTS) {
-                return quoteObject(objectName, objectType)
-            }
-        }
-        return objectName;
-    }
-
-    @Override
-    public boolean isReservedWord(String tableName) {
-        return reservedWords.contains(tableName.toUpperCase());
-    }
-
-    @Override
-    protected SqlStatement getConnectionSchemaNameCallStatement() {
-        return new RawCallStatement("select current_schema()");
+    public int getPriority() {
+        return PRIORITY_DATABASE;
     }
 
     @Override
@@ -163,31 +87,8 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     }
 
     @Override
-    public void setDefaultCatalogName(String defaultCatalogName) {
-        if (StringUtil.isNotEmpty(defaultCatalogName)) {
-            Scope.getCurrentScope().getUI().sendMessage("INFO: Setting Default Catalog.");
-        }
-        super.setDefaultCatalogName(defaultCatalogName);
-    }
-
-    @Override
-    public boolean supportsCreateIfNotExists(Class<? extends DatabaseObject> type) {
-        return true;
-    }
-
-    @Override
-    public boolean supportsDatabaseChangeLogHistory() {
-        return true;
-    }
-
-    @Override
-    public boolean createsIndexesForForeignKeys() {
-        return false;
-    }
-
-    @Override
-    public String getDefaultSchemaName() {
-        return null;
+    public String getShortName() {
+        return "athena";
     }
 
     @Override
@@ -198,6 +99,16 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     @Override
     public boolean isCaseSensitive() {
         return false;
+    }
+
+    @Override
+    public boolean isCorrectDatabaseImplementation(DatabaseConnection databaseConnection) throws DatabaseException {
+        return databaseConnection.getURL().startsWith("jdbc:athena");
+    }
+
+    @Override
+    public boolean isReservedWord(String name) {
+        return reservedWords.contains(name.toUpperCase());
     }
 
     @Override
@@ -216,8 +127,33 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     }
 
     @Override
-    public boolean supportsCatalogs() {
+    public boolean supports(Class<? extends DatabaseObject> type) {
+        String typeName = type.getObjectTypeName()
+        if (typeName == "Table" || typeName == "Column" || typeName == "View" || typeName == "Schema") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean supportsAutoIncrement() {
         return false;
+    }
+
+    @Override
+    public boolean supportsCatalogInObjectName(Class<? extends DatabaseObject> type) {
+        return false;
+    }
+
+    @Override
+    public boolean supportsCreateIfNotExists(Class<? extends DatabaseObject> type) {
+        return true;
+    }
+
+    @Override
+    public boolean supportsDatabaseChangeLogHistory() {
+        return true;
     }
 
     @Override
@@ -227,6 +163,11 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
 
     @Override
     public boolean supportsForeignKeyDisable() {
+        return false;
+    }
+
+    @Override
+    public supportsInitiallyDeferrableColumns() {
         return false;
     }
 
@@ -246,7 +187,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     }
 
     @Override
-    public boolean supportsSchemas() {
+    public boolean supportsTablespaces() {
         return false;
     }
 
