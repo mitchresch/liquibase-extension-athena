@@ -53,7 +53,13 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
 
     @Override
     public String correctObjectName(String name, Class<? extends DatabaseObject> objectType) {
-        return name.toLowerCase(Locale.US);
+        String objectName = super.correctObjectName(name, objectType);
+
+        if (objectName == null) {
+            return objectName;
+        } else {
+            return objectName.toLowerCase(Locale.US);
+        }
     }
 
     @Override
@@ -83,7 +89,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
 
     @Override
     public Integer getDefaultPort() {
-        return 443;
+        return 444;
     }
 
     @Override
