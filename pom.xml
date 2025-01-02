@@ -9,8 +9,8 @@
         <version>0.5.4</version> <!-- Replace with the desired version -->
     </parent>
 
-    <groupId>com.example</groupId>
-    <artifactId>my-extension</artifactId>
+    <groupId>ext.liquibase</groupId>
+    <artifactId>liquibase-extension-athena</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
 

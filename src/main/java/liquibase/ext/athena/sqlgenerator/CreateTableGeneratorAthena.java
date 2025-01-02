@@ -2,7 +2,9 @@ package liquibase.ext.athena.sqlgenerator;
 
 import liquibase.ext.athena.database.AthenaDatabase;
 
+import liquibase.Scope;
 import liquibase.database.Database;
+import liquibase.sqlgenerator.core.CreateTableGenerator;
 import liquibase.sql.Sql;
 import liquibase.sql.UnparsedSql;
 import liquibase.sqlgenerator.SqlGeneratorChain;
@@ -74,14 +76,12 @@ public class CreateTableGeneratorAthena extends CreateTableGenerator {
             }
         }
 
-        buffer.append("LOCATION " + database.getS3Location + "TBLPROPERTIES ( 'table_type = ICEBERG' )");
+        String location = Scope.getCurrentScope().get("liquibaseS3Location", String.class);
 
-        String sql = buffer.toString().replaceFirst(",\\s*$", "") + ")";
+        buffer.append(") LOCATION " + location + "TBLPROPERTIES ( 'table_type = ICEBERG' )");
+
+        String sql = buffer.toString().replaceFirst(",\\s*$", "");
 
         return new Sql[]{new UnparsedSql(sql, new Table().setName(statement.getTableName()).setSchema(new Schema(statement.getCatalogName(), statement.getSchemaName())))};
-    }
-
-    private boolean constraintNameAfterUnique() {
-        return true;
     }
 }

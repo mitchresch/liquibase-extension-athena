@@ -3,11 +3,21 @@ package liquibase.ext.athena.database;
 import liquibase.database.AbstractJdbcDatabase;
 import liquibase.exception.DatabaseException;
 import liquibase.structure.DatabaseObject;
+import liquibase.CatalogAndSchema;
+import liquibase.database.DatabaseConnection;
+import liquibase.structure.core.Schema;
+import liquibase.structure.core.Table;
+import liquibase.structure.core.Column;
+import liquibase.structure.core.View;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Set;
+import java.util.HashSet;
 
 public class AthenaDatabase extends AbstractJdbcDatabase {
+
+    private Set<String> athenaReservedWords = new HashSet<String>();
 
     public AthenaDatabase() {
         super.setCurrentDateTimeFunction("CURRENT_TIMESTAMP");
@@ -16,7 +26,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
          * Keywords taken from here:
          * https://docs.aws.amazon.com/athena/latest/ug/reserved-words.html#list-of-ddl-reserved-words
          */
-        reservedWords.addAll(Arrays.asList("ALL", "ALTER", "AND", "ARRAY", "AS", 
+        athenaReservedWords.addAll(Arrays.asList("ALL", "ALTER", "AND", "ARRAY", "AS", 
             "AUTHORIZATION", "BETWEEN", "BIGINT", "BINARY", "BOOLEAN", "BOTH",
             "BY", "CASE", "CASHE", "CAST", "CHAR", "COLUMN", "CONF", "CONSTRAINT",
             "COMMIT", "CREATE", "CROSS", "CUBE", "CURRENT", "CURRENT_DATE", 
@@ -36,14 +46,14 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
             "TRIGGER", "TRUE", "TRUNCATE", "UNBOUNDED", "UNION", "UNIQUEJOIN", "UPDATE",
             "USER", "USING", "UTC_TIMESTAMP", "VALUES", "VARCHAR", "VIEWS", "WHEN",
             "WHERE", "WINDOW", "WITH"
-        ))
+        ));
 
         super.unquotedObjectsAreUppercased = false;
     }
 
     @Override
     public String correctObjectName(String name, Class<? extends DatabaseObject> objectType) {
-        return name.toLowerCase(Locale.US)
+        return name.toLowerCase(Locale.US);
     }
 
     @Override
@@ -108,7 +118,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
 
     @Override
     public boolean isReservedWord(String name) {
-        return reservedWords.contains(name.toUpperCase());
+        return athenaReservedWords.contains(name.toUpperCase());
     }
 
     @Override
@@ -128,8 +138,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
 
     @Override
     public boolean supports(Class<? extends DatabaseObject> type) {
-        String typeName = type.getObjectTypeName()
-        if (typeName == "Table" || typeName == "Column" || typeName == "View" || typeName == "Schema") {
+        if (Schema.class.isAssignableFrom(type) || Table.class.isAssignableFrom(type) || Column.class.isAssignableFrom(type) || View.class.isAssignableFrom(type)) {
             return true;
         } else {
             return false;
@@ -167,7 +176,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     }
 
     @Override
-    public supportsInitiallyDeferrableColumns() {
+    public boolean supportsInitiallyDeferrableColumns() {
         return false;
     }
 
@@ -191,7 +200,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
         return false;
     }
 
-    public String getS3Location() {
-        return AthenaConfiguration.LIQUIBASE_S3_LOCATION.getCurrentValue();
-    }
+    // public String getS3Location() {
+    //     return AthenaConfiguration.LIQUIBASE_S3_LOCATION.getCurrentValue();
+    // }
 }
