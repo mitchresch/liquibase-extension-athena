@@ -46,6 +46,12 @@ public class CreateDatabaseChangeLogTableGeneratorAthena extends CreateDatabaseC
                     "MD5SUM STRING, DESCRIPTION STRING, COMMENTS STRING, TAG STRING, LIQUIBASE STRING," +
                     "CONTEXTS STRING, LABELS STRING, DEPLOYMENT_ID STRING)");
             buffer.append("LOCATION '" + tablePath + "'");
+            buffer.append("TBLPROPERTIES ( 'table_type' = 'ICEBERG');");
+            String tablePath2 = AthenaConfiguration.getS3TableLocation() + "/" + database.getDatabaseChangeLogLockTableName() + "/";
+            buffer.append("CREATE TABLE IF NOT EXISTS ");
+            buffer.append(database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogLockTableName()));
+            buffer.append(" (ID INT, LOCKED BOOLEAN, LOCKGRANTED TIMESTAMP, LOCKEDBY STRING)");
+            buffer.append("LOCATION '" + tablePath2 + "'");
             buffer.append("TBLPROPERTIES ( 'table_type' = 'ICEBERG')");
             
             String sql = buffer.toString().replaceFirst(",\\s*$", "");
