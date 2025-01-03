@@ -38,7 +38,7 @@ public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatab
         try {
             StringBuilder buffer = new StringBuilder();
 
-            String tablePath = AthenaConfiguration.getS3TableLocation() + "/" + database.getDatabaseChangeLogLockTableName() + "/";
+            String tablePath = removeLastCharacter(AthenaConfiguration.getS3TableLocation(), "/") + "/" + database.getDatabaseChangeLogLockTableName() + "/";
             buffer.append("CREATE TABLE IF NOT EXISTS ");
             buffer.append(database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogLockTableName()));
             buffer.append(" (ID INT, LOCKED BOOLEAN, LOCKGRANTED TIMESTAMP, LOCKEDBY STRING)");
@@ -57,5 +57,12 @@ public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatab
 
     protected Relation getAffectedTable(Database database) {
         return new Table().setName(database.getDatabaseChangeLogTableName()).setSchema(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName());
+    }
+
+    protected String removeLastCharacter(String string, String character) {
+        if (!string.isEmpty() && string.charAt(string.length() - 1) == '/') {
+            string = string.substring(0, string.length() - 1);
+        }
+        return string;
     }
 }

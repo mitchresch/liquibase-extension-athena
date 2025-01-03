@@ -66,10 +66,6 @@ public class CreateTableGeneratorAthena extends CreateTableGenerator {
             buffer.append(database.escapeColumnName(statement.getCatalogName(), statement.getSchemaName(), statement.getTableName(), column));
             buffer.append(" ").append(statement.getColumnTypes().get(column).toDatabaseDataType(database).toSql());
 
-            if (statement.getNotNullColumns().containsKey(column)) {
-                buffer.append(" NOT NULL");
-            }
-
             if (columnIterator.hasNext()) {
                 buffer.append(", ");
             }
