@@ -1,1 +1,3 @@
 liquibase.ext.sqlgenerator.CreateTableGeneratorAthena
+liquibase.ext.sqlgenerator.CreateDatabaseChangeLogTableGeneratorAthena
+liquibase.ext.sqlgenerator.CreateDatabaseChangeLogLockTableGeneratorAthena

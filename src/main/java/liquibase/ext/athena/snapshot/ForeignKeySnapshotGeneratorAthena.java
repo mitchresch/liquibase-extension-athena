@@ -6,12 +6,24 @@ import liquibase.exception.DatabaseException;
 import liquibase.snapshot.DatabaseSnapshot;
 import liquibase.snapshot.InvalidExampleException;
 import liquibase.structure.DatabaseObject;
+import liquibase.ext.athena.database.AthenaDatabase;
 
 public class ForeignKeySnapshotGeneratorAthena extends ForeignKeySnapshotGenerator {
     
     @Override
     public int getPriority(Class<? extends DatabaseObject> objectType, Database database) {
-        return PRIORITY_DATABASE;
+        if (database instanceof AthenaDatabase) {
+            return super.getPriority(objectType, database);
+        } else {
+            return PRIORITY_NONE;
+        }
+    }
+
+    @Override
+    public Class<? extends ForeignKeySnapshotGenerator>[] replaces() {
+        return new Class[] {
+            ForeignKeySnapshotGenerator.class
+        };
     }
 
     @Override

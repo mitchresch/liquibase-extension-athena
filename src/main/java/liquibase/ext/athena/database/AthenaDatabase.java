@@ -9,6 +9,7 @@ import liquibase.structure.core.Schema;
 import liquibase.structure.core.Table;
 import liquibase.structure.core.Column;
 import liquibase.structure.core.View;
+import liquibase.ext.athena.configuration.AthenaConfiguration;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -90,6 +91,11 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     @Override
     public Integer getDefaultPort() {
         return 444;
+    }
+
+    @Override
+    public String getDefaultSchemaName() {
+        return null;
     }
 
     @Override
@@ -205,8 +211,4 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     public boolean supportsTablespaces() {
         return false;
     }
-
-    // public String getS3Location() {
-    //     return AthenaConfiguration.LIQUIBASE_S3_LOCATION.getCurrentValue();
-    // }
 }

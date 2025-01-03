@@ -25,12 +25,12 @@ public class CreateTableGeneratorAthena extends CreateTableGenerator {
      */
     @Override
     public boolean supports(CreateTableStatement statement, Database database) {
-        return database instanceof AthenaDatabase;
+        return super.supports(statement, database) && database instanceof AthenaDatabase;
     }
 
     @Override
     public int getPriority() {
-        return PRIORITY_DATABASE + 1;
+        return PRIORITY_DATABASE;
     }
 
     @Override
