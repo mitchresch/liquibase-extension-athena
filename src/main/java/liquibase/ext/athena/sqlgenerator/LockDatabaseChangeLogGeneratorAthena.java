@@ -57,7 +57,7 @@ public class LockDatabaseChangeLogGeneratorAthena extends LockDatabaseChangeLogG
         try {
             String dateValue = database.getCurrentDateTimeFunction();
             UpdateStatement updateStatement = new UpdateStatement(liquibaseCatalog, liquibaseSchema, database.getDatabaseChangeLogLockTableName());
-            updateStatement.addNewColumnValue("lock", true);
+            updateStatement.addNewColumnValue("locked", true);
             updateStatement.addNewColumnValue("lockgranted", new DatabaseFunction(dateValue));
             updateStatement.addNewColumnValue("lockedby", hostname + hostDescription + " (" + hostaddress + ")");
             updateStatement.setWhereClause(database.escapeColumnName(liquibaseCatalog, liquibaseSchema, database.getDatabaseChangeLogTableName(), "ID") + " = 1 AND " + database.escapeColumnName(liquibaseCatalog, liquibaseSchema, database.getDatabaseChangeLogTableName(), "LOCKED") + " = "+ DataTypeFactory.getInstance().fromDescription("boolean", database).objectToSql(false, database));
