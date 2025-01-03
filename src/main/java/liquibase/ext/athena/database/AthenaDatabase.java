@@ -94,11 +94,6 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     }
 
     @Override
-    public String getDefaultSchemaName() {
-        return null;
-    }
-
-    @Override
     public int getPriority() {
         return PRIORITY_DATABASE;
     }
@@ -149,6 +144,11 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
     }
 
     @Override
+    public void setAutoCommit(boolean b) {
+
+    }
+
+    @Override
     public boolean supports(Class<? extends DatabaseObject> type) {
         if (Schema.class.isAssignableFrom(type) || Table.class.isAssignableFrom(type) || Column.class.isAssignableFrom(type) || View.class.isAssignableFrom(type)) {
             return true;
@@ -164,7 +164,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
 
     @Override
     public boolean supportsCatalogInObjectName(Class<? extends DatabaseObject> type) {
-        return false;
+        return true;
     }
 
     @Override
