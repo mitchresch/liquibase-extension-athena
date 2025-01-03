@@ -24,7 +24,7 @@ public class AddPrimaryKeyGeneratorAthena extends AddPrimaryKeyGenerator {
      */
     @Override
     public boolean supports(AddPrimaryKeyStatement statement, Database database) {
-        return false;
+        return true;
     }
 
     @Override
