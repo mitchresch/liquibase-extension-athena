@@ -42,8 +42,8 @@ public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatab
             buffer.append("CREATE TABLE IF NOT EXISTS ");
             buffer.append(database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogLockTableName()));
             buffer.append(" (ID INT, LOCKED BOOLEAN, LOCKGRANTED TIMESTAMP, LOCKEDBY STRING)");
-            buffer.append("LOCATION '" + tablePath + "'");
-            buffer.append("TBLPROPERTIES ( 'table_type' = 'ICEBERG')");
+            buffer.append(" LOCATION '" + tablePath + "'");
+            buffer.append(" TBLPROPERTIES ( 'table_type' = 'ICEBERG')");
             
             String sql = buffer.toString().replaceFirst(",\\s*$", "");
 

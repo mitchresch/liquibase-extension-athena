@@ -164,7 +164,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
 
     @Override
     public boolean supportsCatalogInObjectName(Class<? extends DatabaseObject> type) {
-        return false;
+        return true;
     }
 
     @Override
