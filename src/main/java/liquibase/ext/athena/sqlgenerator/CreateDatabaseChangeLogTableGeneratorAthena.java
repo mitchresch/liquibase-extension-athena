@@ -13,6 +13,7 @@ import liquibase.structure.core.Table;
 import liquibase.structure.core.Relation;
 import liquibase.ext.athena.configuration.AthenaConfiguration;
 import liquibase.sqlgenerator.core.CreateDatabaseChangeLogTableGenerator;
+import java.nio.file.Paths;
 
 public class CreateDatabaseChangeLogTableGeneratorAthena extends CreateDatabaseChangeLogTableGenerator {
     @Override
@@ -36,11 +37,12 @@ public class CreateDatabaseChangeLogTableGeneratorAthena extends CreateDatabaseC
         database.setObjectQuotingStrategy(ObjectQuotingStrategy.LEGACY);
         
         try {
+            String tablePath = Paths.get(AthenaConfiguration.getS3TableLocation(), database.getDatabaseChangeLogTableName()).toString();
             return new Sql[]{
                 new UnparsedSql("CREATE TABLE IF NOT EXISTS " + database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogTableName()) +
                     " (ID STRING, AUTHOR STRING, FILENAME STRING, DATEEXECUTED TIMESTAMP, ORDEREXECUTED INT, EXECTYPE STRING," +
-                    "MD5SUM STRING, DESCRIPTION STRING, DESCRIPTION STRING, COMMENTS STRING, TAG STRING, LIQUIBASE STRING," +
-                    "COMMENTS STRING, LABELS STRING, DEPLOYMENT_ID STRING) LOCATION '" + AthenaConfiguration.getS3TableLocation() +
+                    "MD5SUM STRING, DESCRIPTION STRING, COMMENTS STRING, TAG STRING, LIQUIBASE STRING," +
+                    "CONTEXTS STRING, LABELS STRING, DEPLOYMENT_ID STRING) LOCATION '" + tablePath +
                     "' TBLPROPERTIES ( 'table_type' = 'ICEBERG')", getAffectedTable(database)
                 )
             };

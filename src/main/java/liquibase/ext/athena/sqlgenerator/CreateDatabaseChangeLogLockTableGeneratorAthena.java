@@ -13,6 +13,7 @@ import liquibase.structure.core.Table;
 import liquibase.structure.core.Relation;
 import liquibase.ext.athena.configuration.AthenaConfiguration;
 import liquibase.sqlgenerator.core.CreateDatabaseChangeLogLockTableGenerator;
+import java.nio.file.Paths;
 
 public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatabaseChangeLogLockTableGenerator {
     @Override
@@ -34,13 +35,12 @@ public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatab
     public Sql[] generateSql(CreateDatabaseChangeLogLockTableStatement statement, Database database, SqlGeneratorChain sqlGeneratorChain) {
         ObjectQuotingStrategy currentStrategy = database.getObjectQuotingStrategy();
         database.setObjectQuotingStrategy(ObjectQuotingStrategy.LEGACY);
-        AthenaDatabase athenaDatabase = (AthenaDatabase) database;
+
         try {
+            String tablePath = Paths.get(AthenaConfiguration.getS3TableLocation(), database.getDatabaseChangeLogLockTableName()).toString();
             return new Sql[]{
-                new UnparsedSql("CREATE TABLE IF NOT EXISTS " + database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogTableName()) +
-                    "(ID STRING, AUTHOR STRING, FILENAME STRING, DATEEXECUTED TIMESTAMP, ORDEREXECUTED INT, EXECTYPE STRING," +
-                    "MD5SUM STRING, DESCRIPTION STRING, COMMENTS STRING, TAG STRING, LIQUIBASE STRING," +
-                    "COMMENTS STRING, LABELS STRING, DEPLOYMENT_ID STRING) LOCATION '" + AthenaConfiguration.getS3TableLocation() +
+                new UnparsedSql("CREATE TABLE IF NOT EXISTS " + database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogLockTableName()) +
+                    "(ID INT, LOCKED BOOLEAN, LOCKGRANTED TIMESTAMP, LOCKEDBY STRING) LOCATION '" + tablePath +
                     "' TBLPROPERTIES ( 'table_type' = 'ICEBERG')", getAffectedTable(database)
                 )
             };
