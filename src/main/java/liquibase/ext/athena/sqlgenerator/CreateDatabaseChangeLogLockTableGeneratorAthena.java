@@ -40,8 +40,8 @@ public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatab
                 new UnparsedSql("CREATE TABLE IF NOT EXISTS " + database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogTableName()) +
                     "(ID STRING, AUTHOR STRING, FILENAME STRING, DATEEXECUTED TIMESTAMP, ORDEREXECUTED INT, EXECTYPE STRING," +
                     "MD5SUM STRING, DESCRIPTION STRING, DESCRIPTION STRING, COMMENTS STRING, TAG STRING, LIQUIBASE STRING," +
-                    "COMMENTS STRING, LABELS STRING, DEPLOYMENT_ID STRING) LOCATION " + AthenaConfiguration.getS3TableLocation() +
-                    " TBLPROPERTIES ( 'table_type' = 'ICEBERG')", getAffectedTable(database)
+                    "COMMENTS STRING, LABELS STRING, DEPLOYMENT_ID STRING) LOCATION '" + AthenaConfiguration.getS3TableLocation() +
+                    "' TBLPROPERTIES ( 'table_type' = 'ICEBERG')", getAffectedTable(database)
                 )
             };
         } finally {
