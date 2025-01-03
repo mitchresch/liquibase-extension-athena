@@ -20,7 +20,7 @@ import java.util.List;
 public class AddPrimaryKeyGeneratorAthena extends AddPrimaryKeyGenerator {
 
     /*
-     * Returns true if the database is Athena
+     * Returns false
      */
     @Override
     public boolean supports(AddPrimaryKeyStatement statement, Database database) {
