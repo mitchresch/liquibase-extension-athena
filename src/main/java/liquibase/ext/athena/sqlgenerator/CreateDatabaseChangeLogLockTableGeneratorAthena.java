@@ -40,7 +40,7 @@ public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatab
 
             String tablePath = AthenaConfiguration.getS3TableLocation() + "/" + database.getDatabaseChangeLogLockTableName() + "/";
             buffer.append("CREATE TABLE IF NOT EXISTS ");
-            buffer.append(database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogTableName()));
+            buffer.append(database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogLockTableName()));
             buffer.append(" (ID INT, LOCKED BOOLEAN, LOCKGRANTED TIMESTAMP, LOCKEDBY STRING)");
             buffer.append("LOCATION '" + tablePath + "'");
             buffer.append("TBLPROPERTIES ( 'table_type' = 'ICEBERG')");
