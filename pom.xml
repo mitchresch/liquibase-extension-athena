@@ -28,7 +28,8 @@
     <developers>
         <developer>
             <name>Mitch Resch</name>
-            <email>mresch01@gmail.com.com</email>
+            <email>mresch01@gmail.com</email>
+            <organization>Mitch Resch</organization>
             <organizationUrl>https://github.com/mitchresch</organizationUrl>
         </developer>
     </developers>
