@@ -11,8 +11,6 @@ import liquibase.sqlgenerator.SqlGeneratorChain;
 import liquibase.statement.core.CreateTableStatement;
 import liquibase.structure.core.Schema;
 import liquibase.structure.core.Table;
-import liquibase.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 import liquibase.ext.athena.configuration.AthenaConfiguration;
 
 import java.util.Iterator;
