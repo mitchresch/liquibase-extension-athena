@@ -13,10 +13,12 @@ import liquibase.structure.core.Schema;
 import liquibase.structure.core.Table;
 import liquibase.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
+import liquibase.ext.athena.configuration.AthenaConfiguration;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.nio.file.Paths;
 
 public class CreateTableGeneratorAthena extends CreateTableGenerator {
 
@@ -76,9 +78,9 @@ public class CreateTableGeneratorAthena extends CreateTableGenerator {
             }
         }
 
-        String location = Scope.getCurrentScope().get("liquibaseS3Location", String.class);
+        String tablePath = Paths.get(AthenaConfiguration.getS3TableLocation(), statement.getTableName()).toString();
 
-        buffer.append(") LOCATION " + location + "TBLPROPERTIES ( 'table_type = ICEBERG' )");
+        buffer.append(") LOCATION '"+ tablePath + "' TBLPROPERTIES ( 'table_type' = 'ICEBERG' )");
 
         String sql = buffer.toString().replaceFirst(",\\s*$", "");
 
