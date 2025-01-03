@@ -1,1 +1,1 @@
-liquibase.ext.athena.changelog.UnlockDatabaseChangeLogGeneratorAthena
+liquibase.ext.athena.changelog.filter.UnsupportedChangeSetFilterAthena

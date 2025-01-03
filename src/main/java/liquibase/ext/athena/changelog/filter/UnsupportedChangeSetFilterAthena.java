@@ -1,4 +1,4 @@
-package liquibase.ext.athena.changelog;
+package liquibase.ext.athena.changelog.filter;
 
 import liquibase.changelog.filter.ChangeSetFilter;
 import liquibase.changelog.ChangeSet;
