@@ -115,7 +115,7 @@ public class AthenaDatabase extends AbstractJdbcDatabase {
 
     @Override
     public boolean isCaseSensitive() {
-        return false;
+        return true;
     }
 
     @Override
