@@ -75,11 +75,18 @@ public class CreateTableGeneratorAthena extends CreateTableGenerator {
             }
         }
 
-        String tablePath = AthenaConfiguration.getS3TableLocation() + "/" + statement.getTableName() + "/";
+        String tablePath = removeLastCharacter(AthenaConfiguration.getS3TableLocation(), "/") + "/" + statement.getTableName() + "/";
         buffer.append(") LOCATION '" + tablePath + "' TBLPROPERTIES ( 'table_type' = 'ICEBERG' )");
 
         String sql = buffer.toString().replaceFirst(",\\s*$", "");
 
         return new Sql[]{new UnparsedSql(sql, new Table().setName(statement.getTableName()).setSchema(new Schema(statement.getCatalogName(), statement.getSchemaName())))};
+    }
+
+    protected String removeLastCharacter(String string, String character) {
+        if (!string.isEmpty() && string.charAt(string.length() - 1) == '/') {
+            string = string.substring(0, string.length() - 1);
+        }
+        return string;
     }
 }
