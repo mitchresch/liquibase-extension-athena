@@ -27,10 +27,9 @@
 
     <developers>
         <developer>
-            <name>Your Name</name>
-            <email>youremail@example.com</email>
-            <organization>Liquibase</organization>
-            <organizationUrl>https://www.liquibase.com/</organizationUrl>
+            <name>Mitch Resch</name>
+            <email>mresch01@gmail.com.com</email>
+            <organizationUrl>https://github.com/mitchresch</organizationUrl>
         </developer>
     </developers>
 
