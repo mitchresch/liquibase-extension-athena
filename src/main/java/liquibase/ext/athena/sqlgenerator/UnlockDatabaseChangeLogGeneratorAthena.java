@@ -46,7 +46,7 @@ public class UnlockDatabaseChangeLogGeneratorAthena extends UnlockDatabaseChange
             updateStatement.addNewColumnValue("locked", false);
             updateStatement.addNewColumnValue("lockgranted", null);
             updateStatement.addNewColumnValue("lockedby", null);
-            updateStatement.setWhereClause(database.escapeColumnName(liquibaseCatalog, liquibaseSchema, database.getDatabaseChangeLogTableName(), "ID") + " = 1 AND " + database.escapeColumnName(liquibaseCatalog, liquibaseSchema, database.getDatabaseChangeLogTableName(), "LOCKED") + " = "+ DataTypeFactory.getInstance().fromDescription("boolean", database).objectToSql(false, database));
+            updateStatement.setWhereClause(database.escapeColumnName(liquibaseCatalog, liquibaseSchema, database.getDatabaseChangeLogTableName(), "ID") + " = 1");
 
             return SqlGeneratorFactory.getInstance().generateSql(updateStatement, database);
         } finally {
