@@ -22,7 +22,7 @@ public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatab
 
     @Override
     public boolean supports(CreateDatabaseChangeLogLockTableStatement statement, Database database) {
-        return super.supports(statement, database) && database instanceof AthenaDatabase;
+        return database instanceof AthenaDatabase;
     }
 
     @Override
