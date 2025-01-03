@@ -35,7 +35,7 @@ public class AddPrimaryKeyGeneratorAthena extends AddPrimaryKeyGenerator {
     @Override
     public Sql[] generateSql(AddPrimaryKeyStatement statement, Database database, SqlGeneratorChain sqlGeneratorChain) {
         StringBuilder buffer = new StringBuilder();
-        buffer.append("-- N/A Primary Key is not supported in Athena")
+        buffer.append("-- N/A Primary Key is not supported in Athena");
         String sql = buffer.toString().replaceFirst(",\\s*$", "");
 
         return new Sql[]{new UnparsedSql(sql, new Table().setName(statement.getTableName()).setSchema(new Schema(statement.getCatalogName(), statement.getSchemaName())))};
