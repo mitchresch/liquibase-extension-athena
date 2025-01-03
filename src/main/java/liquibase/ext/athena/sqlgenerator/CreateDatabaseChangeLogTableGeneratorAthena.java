@@ -51,7 +51,8 @@ public class CreateDatabaseChangeLogTableGeneratorAthena extends CreateDatabaseC
             String sql = buffer.toString().replaceFirst(",\\s*$", "");
 
             return new Sql[]{
-                new UnparsedSql(sql, getAffectedTable(database))};
+                new UnparsedSql(sql, getAffectedTable(database))
+            };
         } finally {
             database.setObjectQuotingStrategy(currentStrategy);
         }

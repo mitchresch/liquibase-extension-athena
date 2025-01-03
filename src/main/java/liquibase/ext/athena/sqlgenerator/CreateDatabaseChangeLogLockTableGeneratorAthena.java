@@ -36,12 +36,19 @@ public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatab
         database.setObjectQuotingStrategy(ObjectQuotingStrategy.LEGACY);
 
         try {
+            StringBuilder buffer = new StringBuilder();
+
             String tablePath = AthenaConfiguration.getS3TableLocation() + "/" + database.getDatabaseChangeLogLockTableName() + "/";
+            buffer.append("CREATE TABLE IF NOT EXISTS ");
+            buffer.append(database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogTableName()));
+            buffer.append(" (ID INT, LOCKED BOOLEAN, LOCKGRANTED TIMESTAMP, LOCKEDBY STRING)");
+            buffer.append("LOCATION '" + tablePath + "'");
+            buffer.append("TBLPROPERTIES ( 'table_type' = 'ICEBERG')");
+            
+            String sql = buffer.toString().replaceFirst(",\\s*$", "");
+
             return new Sql[]{
-                new UnparsedSql("CREATE TABLE IF NOT EXISTS " + database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogLockTableName()) +
-                    "(ID INT, LOCKED BOOLEAN, LOCKGRANTED TIMESTAMP, LOCKEDBY STRING) LOCATION '" + tablePath +
-                    "' TBLPROPERTIES ( 'table_type' = 'ICEBERG')", getAffectedTable(database)
-                )
+                new UnparsedSql(sql, getAffectedTable(database))
             };
         } finally {
             database.setObjectQuotingStrategy(currentStrategy);
