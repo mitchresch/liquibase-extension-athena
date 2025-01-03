@@ -18,7 +18,6 @@ import liquibase.ext.athena.configuration.AthenaConfiguration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.nio.file.Paths;
 
 public class CreateTableGeneratorAthena extends CreateTableGenerator {
 
@@ -78,8 +77,7 @@ public class CreateTableGeneratorAthena extends CreateTableGenerator {
             }
         }
 
-        String tablePath = Paths.get(AthenaConfiguration.getS3TableLocation(), statement.getTableName()).toString();
-
+        String tablePath = AthenaConfiguration.getS3TableLocation() + "/" + statement.getTableName() + "/";
         buffer.append(") LOCATION '" + tablePath + "' TBLPROPERTIES ( 'table_type' = 'ICEBERG' )");
 
         String sql = buffer.toString().replaceFirst(",\\s*$", "");

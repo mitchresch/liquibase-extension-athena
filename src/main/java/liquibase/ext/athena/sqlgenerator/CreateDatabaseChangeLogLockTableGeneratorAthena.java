@@ -13,7 +13,6 @@ import liquibase.structure.core.Table;
 import liquibase.structure.core.Relation;
 import liquibase.ext.athena.configuration.AthenaConfiguration;
 import liquibase.sqlgenerator.core.CreateDatabaseChangeLogLockTableGenerator;
-import java.nio.file.Paths;
 
 public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatabaseChangeLogLockTableGenerator {
     @Override
@@ -37,7 +36,7 @@ public class CreateDatabaseChangeLogLockTableGeneratorAthena extends CreateDatab
         database.setObjectQuotingStrategy(ObjectQuotingStrategy.LEGACY);
 
         try {
-            String tablePath = Paths.get(AthenaConfiguration.getS3TableLocation(), database.getDatabaseChangeLogLockTableName()).toString();
+            String tablePath = AthenaConfiguration.getS3TableLocation() + "/" + database.getDatabaseChangeLogLockTableName() + "/";
             return new Sql[]{
                 new UnparsedSql("CREATE TABLE IF NOT EXISTS " + database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogLockTableName()) +
                     "(ID INT, LOCKED BOOLEAN, LOCKGRANTED TIMESTAMP, LOCKEDBY STRING) LOCATION '" + tablePath +
